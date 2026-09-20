@@ -180,23 +180,17 @@ allowed = function(url, parent)
 
   for _, pattern in pairs({
     "^https?://photohito%.com/user/login/",
-    "^https?://photohito%.com/user/logout/",
-    "^https?://photohito%.com/user/regist/",
     "^https?://photohito%.com/photo/upload/",
     "^https?://[^/]*amazon%-adsystem%.com/",
     "^https?://[^/]*doubleclick%.net/",
     "^https?://[^/]*googletagmanager%.com/",
-    "^https?://[^/]*googleadservices%.com/",
     "^https?://[^/]*rubiconproject%.com/",
     "^https?://[^/]*s%-onetag%.com/",
     "^https?://[^/]*geoedge%.be/",
     "^https?://assets%.adobedtm%.com/",
     "^https?://[^/]*twitter%.com/intent/",
-    "^https?://[^/]*twitter%.com/share%?",
     "^https?://[^/]*facebook%.com/sharer",
-    "^https?://[^/]*w3%.org/",
-    "^https?://schema%.org/",
-    "^https?://ogp%.me/"
+    "^https?://[^/]*w3%.org/2000/svg$"
   }) do
     if string.match(lower, pattern) then
       return false
@@ -207,7 +201,9 @@ allowed = function(url, parent)
   if found then
     local new_item = found["type"] .. ":" .. found["value"]
     if new_item ~= item_name then
-      discover_item(discovered_items, percent_encode_url(new_item))
+      if found["type"] ~= "photo" then
+        discover_item(discovered_items, percent_encode_url(new_item))
+      end
       return false
     end
     return true

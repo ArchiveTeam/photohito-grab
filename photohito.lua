@@ -179,6 +179,7 @@ allowed = function(url, parent)
   end
 
   for _, pattern in pairs({
+    "^https?://photohito%.com/api/photolist/",
     "^https?://photohito%.com/user/login/",
     "^https?://photohito%.com/photo/upload/",
     "^https?://[^/]*amazon%-adsystem%.com/",
@@ -199,6 +200,12 @@ allowed = function(url, parent)
 
   local found = find_item(url)
   if found then
+    if found["type"] == "media" and item_type ~= "media" then
+      local image_url = string.match(found["value"], "^(photohito%.k%-img%.com/uploads/.-)_[tml]%.jpg$")
+      if image_url then
+        allowed("https://" .. image_url .. "_o.jpg", parent)
+      end
+    end
     local new_item = found["type"] .. ":" .. found["value"]
     if new_item ~= item_name then
       if found["type"] ~= "photo" then

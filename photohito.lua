@@ -387,7 +387,7 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
   end
 
   if item_type == "media"
-    and string.match(url, "^https?://photohito%.k%-img%.com/uploads/") then
+    and string.match(url, "^https?://photohito%.k%-img%.com/uploads/.-_m%.jpg$") then
     check(string.gsub(url, "^https?://photohito%.k%-img%.com/", "https://photohito.com/"))
   end
 
@@ -710,6 +710,9 @@ wget.callbacks.httploop_result = function(url, err, http_stat)
     io.stdout:flush()
     tries = tries + 1
     local maxtries = 5
+    if status_code == 403 then
+      maxtries = 0
+    end
     if tries > maxtries then
       io.stdout:write(" Skipping.\n")
       io.stdout:flush()

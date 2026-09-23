@@ -200,12 +200,6 @@ allowed = function(url, parent)
 
   local found = find_item(url)
   if found then
-    if found["type"] == "media" and item_type ~= "media" then
-      local image_url = string.match(found["value"], "^(photohito%.k%-img%.com/uploads/.-)_[tml]%.jpg$")
-      if image_url then
-        allowed("https://" .. image_url .. "_o.jpg", parent)
-      end
-    end
     local new_item = found["type"] .. ":" .. found["value"]
     if new_item ~= item_name then
       if found["type"] ~= "photo" then
@@ -386,9 +380,14 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
     end
   end
 
-  if item_type == "media"
-    and string.match(url, "^https?://photohito%.k%-img%.com/uploads/.-_m%.jpg$") then
-    check(string.gsub(url, "^https?://photohito%.k%-img%.com/", "https://photohito.com/"))
+  if item_type == "media" then
+    if string.match(url, "^https?://photohito%.k%-img%.com/uploads/.-_m%.jpg$") then
+      check(string.gsub(url, "^https?://photohito%.k%-img%.com/", "https://photohito.com/"))
+    end
+    local image_url = string.match(url, "^(https?://photohito%.k%-img%.com/uploads/.-)_[stml]%.jpg$")
+    if image_url then
+      check(image_url .. "_o.jpg")
+    end
   end
 
   if allowed(url) and status_code < 300 then

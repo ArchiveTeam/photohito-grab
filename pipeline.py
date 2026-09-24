@@ -5,6 +5,7 @@ import datetime
 import gzip
 import hashlib
 import os
+import random
 import re
 import shutil
 import socket
@@ -71,7 +72,7 @@ if not WGET_AT:
 #
 # Update this each time you make a non-cosmetic change.
 # It will be added to the WARC files and reported to the tracker.
-VERSION = '20260923.02'
+VERSION = '20260924.01'
 TRACKER_ID = 'photohito'
 TRACKER_HOST = 'legacy-api.arpa.li'
 MULTI_ITEM_SIZE = 100
@@ -328,6 +329,7 @@ class WgetArgs(object):
         wget_args = [
             WGET_AT,
             '-nv',
+            '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:{a}.0) Gecko/20100101 Firefox/{a}.0'.format(a=random.randint(145, 156)),
             '--no-hsts',
             '--host-lookups', 'dns',
             '--hosts-file', '/dev/null',
@@ -361,7 +363,7 @@ class WgetArgs(object):
             '--warc-header', 'x-wget-at-project-version: ' + VERSION,
             '--warc-header', 'x-wget-at-project-name: ' + TRACKER_ID,
             '--warc-dedup-url-agnostic',
-            '--impersonate', 'firefox148-h1',
+            '--http-impersonate', 'firefox148-h1',
             '--header', 'Accept-Encoding: identity'
         ]
 

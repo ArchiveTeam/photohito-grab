@@ -559,7 +559,8 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
     page = tonumber(page)
     if status_code == 200 then
       scan["lower"] = page
-    elseif status_code == 404 then
+    elseif status_code == 404
+      or status_code == 410 then
       scan["upper"] = page
     else
       abort_item()
@@ -612,6 +613,7 @@ wget.callbacks.write_to_warc = function(url, http_stat)
     status_code == 200
     or status_code == 301
     or status_code == 302
+    or status_code == 410
     or (
       status_code == 404
       and (url["url"] == context["entry_url"] or item_type == "media" or item_type == "page")
@@ -621,7 +623,10 @@ wget.callbacks.write_to_warc = function(url, http_stat)
     return false
   end
 
-  if status_code == 200 then
+  if status_code == 410
+    and string.match(url["url"], "^https?://photohito%.com/photo/orgshow/") then
+    context["photo_file"] = nil
+  elseif status_code == 200 then
     if http_stat["len"] == 0
       or (http_stat["contlen"] >= 0 and http_stat["len"] ~= http_stat["contlen"]) then
       retry_url = true
